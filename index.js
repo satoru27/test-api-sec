@@ -7,6 +7,9 @@ app.listen(PORT, () => console.log('API running on port ' + PORT))
 app.get('/', (req,res) => res.json('My API is running :O'))
 
 app.get('/v2/license/security/authorizeToken', (req,res,next) => {
+
+	console.log(req)
+
 	let data = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><AuthorizeTokenResultVO><authenticateUserID>kfzd5kaklc</authenticateUserID><authorizeCode>LIC_2101</authorizeCode><authorizeDesc>SUCCESS</authorizeDesc><remainExpireTimeSec>65048</remainExpireTimeSec></AuthorizeTokenResultVO>'
 
 	res.removeHeader('X-Powered-By');
@@ -22,4 +25,6 @@ app.get('/v2/license/security/authorizeToken', (req,res,next) => {
     res.header("X-RateLimit-Limit", "100000")
 
 	res.status(200).send(data)
+
+	console.log('Answering with token confirmation...')
 })
