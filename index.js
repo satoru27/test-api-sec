@@ -2,6 +2,13 @@ import express from 'express'
 
 const app = express()
 const PORT = 443 
+
+app.use(express.static(__dirname, { dotfiles: 'allow' } ));
+
+app.listen(80, () => {
+  console.log('HTTP server running on port 80');
+});
+
 app.listen(PORT, () => console.log('API running on port ' + PORT))
 
 app.get('/', (req,res) => res.json('My API is running :O'))
