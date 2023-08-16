@@ -1,20 +1,49 @@
 import express from 'express'
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from 'fs'
+import http from 'http'
+import https from 'https'
+//import path from 'path';
+//import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+//const __filename = fileURLToPath(import.meta.url);
+//const __dirname = path.dirname(__filename);
+
+//const fs = require('fs');
+//const http = require('http');
+//const https = require('https');
 
 const app = express()
 const PORT = 443 
 
-app.use(express.static(__dirname, { dotfiles: 'allow' } ));
+//app.use(express.static(__dirname, { dotfiles: 'allow' } ));
 
-app.listen(80, () => {
-  console.log('HTTP server running on port 80');
+// Certificate
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/pentest.offsecsidi.cf/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/etc/letsencrypt/live/pentest.offsecsidi.cf/fullchain.pem', 'utf8');
+const ca = fs.readFileSync('/etc/letsencrypt/live/pentest.offsecsidi.cf/chain.pem', 'utf8');
+
+const credentials = {
+	key: privateKey,
+	cert: certificate,
+	ca: ca
+};
+
+//app.listen(80, () => {
+//  console.log('HTTP server running on port 80');
+//});
+
+//app.listen(PORT, () => console.log('API running on port ' + PORT))
+
+const httpServer = http.createServer(app);
+const httpsServer = https.createServer(credentials, app);
+
+httpServer.listen(80, () => {
+	console.log('HTTP Server running on port 80');
 });
 
-app.listen(PORT, () => console.log('API running on port ' + PORT))
+httpsServer.listen(443, () => {
+	console.log('HTTPS Server running on port 443');
+});
 
 app.get('/', (req,res) => res.json('My API is running :O'))
 
